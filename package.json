@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js"
@@ -19,7 +20,8 @@
   },
   "homepage": "https://github.com/event-easier/event-easier-service#readme",
   "dependencies": {
-    "expressjs": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.4.0"
   },
