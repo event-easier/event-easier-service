@@ -20,6 +20,7 @@
   "homepage": "https://github.com/event-easier/event-easier-service#readme",
   "dependencies": {
     "expressjs": "^1.0.1",
+    "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.4.0"
   },
   "devDependencies": {
