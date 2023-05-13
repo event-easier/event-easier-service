@@ -10,8 +10,6 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 async function main() {
-  console.log("start main func");
-  console.log("start main func release");
   // middlewares
   app.use(express.json());
 
