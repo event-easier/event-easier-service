@@ -1,9 +1,8 @@
 import { config } from "dotenv";
 config();
+import path from "path";
 import express from "express";
 import fs from "fs";
-import path from "path";
-
 import exampleRoutes from "./routes/example.route.js";
 
 const app = express();
