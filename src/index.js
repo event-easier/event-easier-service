@@ -5,9 +5,10 @@ import fs from "fs";
 import path from "path";
 import connectDatabase from "./configs/connectMongoDB.config.js";
 import exampleRoutes from "./routes/example.route.js";
+import userRouter from "./routes/user.route.js";
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 
 async function main() {
   await connectDatabase();
@@ -24,6 +25,7 @@ async function main() {
     res.send(indexHtml);
   });
   app.use("/api/v1/example", exampleRoutes);
+  app.use("/user",userRouter);
 
   // start server
   app.listen(PORT);
