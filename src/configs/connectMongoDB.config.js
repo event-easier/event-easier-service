@@ -1,6 +1,5 @@
-import mongoose  from 'mongoose';
-import * as dotenv from 'dotenv'
-dotenv.config({ path: '.env.development' });
+import mongoose from "mongoose";
+
 
 const connectDatabase = async () => {
   try {
@@ -8,8 +7,8 @@ const connectDatabase = async () => {
     const connect = await mongoose.connect(dbConfig);
     console.log(`Mongodb: ${connect.connection.host}`);
   } catch (e) {
-    console.log('Error connect');
+    console.log("Error connect");
   }
-}
+};
 
 export default connectDatabase;

@@ -8,8 +8,10 @@ import exampleRoutes from "./routes/example.route.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-connectDatabase();
+
 async function main() {
+  await connectDatabase();
+
   // middlewares
   app.use(express.json());
 
@@ -23,8 +25,6 @@ async function main() {
   });
   app.use("/api/v1/example", exampleRoutes);
 
-
-  
   // start server
   app.listen(PORT);
 }
