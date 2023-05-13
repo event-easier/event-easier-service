@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 8080;
 
 async function main() {
   console.log("start main func");
-  console.log("start main func release");
+  console.log("start main func version quang branch");
   // middlewares
   app.use(express.json());
 
