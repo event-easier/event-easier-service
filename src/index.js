@@ -3,13 +3,15 @@ config();
 import express from "express";
 import fs from "fs";
 import path from "path";
-
+import connectDatabase from "./configs/connectMongoDB.config.js";
 import exampleRoutes from "./routes/example.route.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 async function main() {
+  await connectDatabase();
+
   // middlewares
   app.use(express.json());
 
