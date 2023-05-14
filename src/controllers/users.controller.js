@@ -4,8 +4,9 @@ import  jwt  from "jsonwebtoken";
 export const login = async (res, req) => {
   const email = res.body.email;
   const user = await usersModels.findOne({ email: email });
-  if (user !== [{}]) {
+  if (user) {
     req.json({
+      id: user._id,
       name: user.name,
       email: user.email,
       avatar: user.avatar,
@@ -22,11 +23,12 @@ export const login = async (res, req) => {
 export const register = async (res, req) => {
   const { email, name, avatar, type } = res.body;
   const User = await usersModels.findOne({ email: email });
-  if (User === [{}]) {
+  if (User) {
     req.send("email already exis");
   } else {
     const newUser = await usersModels.create({ email, name, avatar, type });
     req.json({
+      id: newUser._id,
       name: newUser.name,
       email: newUser.email,
       avatar: newUser.avatar,
