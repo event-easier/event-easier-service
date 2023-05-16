@@ -25,7 +25,7 @@ async function main() {
     res.send(indexHtml);
   });
   app.use("/api/v1/example", exampleRoutes);
-  app.use("/user",userRouter);
+  app.use("/api/v1/user",userRouter);
 
   // start server
   app.listen(PORT);
