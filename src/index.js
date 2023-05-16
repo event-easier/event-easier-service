@@ -4,6 +4,7 @@ import express from "express";
 import fs from "fs";
 import path from "path";
 import connectDatabase from "./configs/connectMongoDB.config.js";
+import eventRouter from "./routes/event.route.js";
 import exampleRoutes from "./routes/example.route.js";
 import userRouter from "./routes/user.route.js";
 
@@ -26,6 +27,7 @@ async function main() {
   });
   app.use("/api/v1/example", exampleRoutes);
   app.use("/api/v1/user",userRouter);
+  app.use("/api/v1/event",eventRouter);
 
   // start server
   app.listen(PORT);
