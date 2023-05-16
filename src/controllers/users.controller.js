@@ -1,5 +1,5 @@
 import usersModels from "../models/users.models.js";
-import  jwt  from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 export const login = async (res, req) => {
   const email = res.body.email;
@@ -11,7 +11,7 @@ export const login = async (res, req) => {
       email: user.email,
       avatar: user.avatar,
       type: user.type,
-      token: jwt.sign({ id: user._id }, process.env.PRIVATEKEY, {
+      token: jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
       }),
     });
@@ -33,7 +33,7 @@ export const register = async (res, req) => {
       email: newUser.email,
       avatar: newUser.avatar,
       type: newUser.type,
-      token: jwt.sign({ id: newUser._id }, process.env.PRIVATEKEY, {
+      token: jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
       }),
     });
