@@ -1,22 +1,43 @@
 import usersModels from "../models/users.models.js";
 import jwt from "jsonwebtoken";
+import NodeCache from "node-cache";
+import { sendEmail } from "../utils/email.utils.js";
 
-export const login = async (res, req) => {
-  const email = res.body.email;
+const cache = new NodeCache({ stdTTL: 600 });
+const min = 100000;
+const max = 999999;
+const code = Math.floor(Math.random() * (max - min + 1)) + min;
+
+export const login = async (req, res) => {
+  const email = req.body.email;
   const user = await usersModels.findOne({ email: email });
   if (user) {
-    req.json({
+    await sendEmail({ data: req.body, code: code });
+    cache.set(req.body.email, code);
+    res.json({
       id: user._id,
       name: user.name,
       email: user.email,
       avatar: user.avatar,
       type: user.type,
+    });
+  } else {
+    res.send("not found user");
+  }
+};
+
+export const verifyUser = async (req, res) => {
+  const code = cache.get(req.body.email);
+  const user = await usersModels.findOne({ email: req.body.email });
+  if (code === Number(req.body.code)) {
+    res.json({
+     data: user,
       token: jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
       }),
     });
   } else {
-    req.send("not found user");
+    res.send("wrong code");
   }
 };
 
