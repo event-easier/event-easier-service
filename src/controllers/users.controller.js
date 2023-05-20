@@ -31,7 +31,7 @@ export const verifyUser = async (req, res) => {
   const user = await usersModels.findOne({ email: req.body.email });
   if (code === Number(req.body.code)) {
     res.json({
-     data: user,
+      data: user,
       token: jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
       }),
@@ -41,19 +41,16 @@ export const verifyUser = async (req, res) => {
   }
 };
 
-export const register = async (res, req) => {
-  const { email, name, avatar, type } = res.body;
+export const register = async (req, res) => {
+  const { email, name, avatar, type } = req.body;
   const User = await usersModels.findOne({ email: email });
   if (User) {
-    req.send("email already exis");
-  } else {
+  res.status(400).send({
+      message: "User already exists with this:" + email
+  })} else {
     const newUser = await usersModels.create({ email, name, avatar, type });
-    req.json({
-      id: newUser._id,
-      name: newUser.name,
-      email: newUser.email,
-      avatar: newUser.avatar,
-      type: newUser.type,
+    res.json({
+      data:newUser,
       token: jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
       }),
