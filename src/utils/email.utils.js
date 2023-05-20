@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
   const mailOptions = {
     from: 'event.easier.911@gmail.com',
     to: data.data.email,
-    subject: 'Test email from Node.js',
+    subject: data.code + " is your Luma sign in code",
     html: htmlEmail(data.code),
   };
 
@@ -145,7 +145,7 @@ const htmlEmail = (code)=>{ return  (`
                                     text-align: left;
                                     color: #131517;
                                   ">
-                                  is your Luma sign in code.
+                                  is your Events Easier sign in code.
                                 </div>
                               </td>
                             </tr>
