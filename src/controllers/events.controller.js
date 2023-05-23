@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import eventsModels from "../models/events.models.js";
 
 export const create = (req, res) => {
@@ -71,8 +72,10 @@ export const findAll = (req, res) => {
 };
 
 export const updateById = (req, res) => {
+ 
   const id = req.params.id;
   const event = req.body;
+  const userId = req.userId;
   if(!event){
     res.status(400).send({message: "Content can not be empty!"});
     return;
@@ -91,4 +94,25 @@ export const updateById = (req, res) => {
         });
       });
   }
+
+  // eventsModels.findByIdAndUpdate(id, { $set: event }, { new: true })
+  // .where({ "hosts.user_id": userId })
+  //   .then(data => {
+  //     if (!data) {
+  //       console.log(data)
+  //       res.status(404).send({ message: "Not found event with id " + id });
+  //     } else {
+  //       res.send(data);
+  //     }
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //     res.status(500).send({
+  //       message: "Error updating event with id=" + id
+  //     });
+  //   });
+
 };
+
+
+ 

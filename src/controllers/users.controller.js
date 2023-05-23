@@ -14,7 +14,7 @@ export const login = async (req, res) => {
   if (user) {
     await sendEmail({ data: req.body, code: code });
     cache.set(req.body.email, code);
-    res.status(200);
+    res.status(200).send("check your email");
   } else {
     res.send("not found user");
   }
