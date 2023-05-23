@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 config();
 import express from "express";
+import cors from "cors";
 import fs from "fs";
 import path from "path";
 import connectDatabase from "./configs/connectMongoDB.config.js";
@@ -16,6 +17,12 @@ async function main() {
 
   // middlewares
   app.use(express.json());
+  app.use(
+    cors({
+      origin: "*",
+      methods: ["GET", "POST", "PUT", "DELETE"],
+    })
+  );
 
   // routes
   app.get("/", (req, res) => {
@@ -26,8 +33,8 @@ async function main() {
     res.send(indexHtml);
   });
   app.use("/api/v1/example", exampleRoutes);
-  app.use("/api/v1/user",userRouter);
-  app.use("/api/v1/event",eventRouter);
+  app.use("/api/v1/user", userRouter);
+  app.use("/api/v1/event", eventRouter);
 
   // start server
   app.listen(PORT);
