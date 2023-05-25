@@ -1,5 +1,6 @@
 import eventsModels from "../models/events.models.js";
 import { createZoomMeeting } from "../utils/zoom.utils.js";
+import { sendEmailInvited } from "../utils/email.utils.js";
 
 export const create = async (req, res) => {
   if (!req.body.name) {
@@ -121,7 +122,9 @@ export const updateById = (req, res) => {
         console.log(data);
         res.status(404).send({ message: "Not found event with id " + id });
       } else {
-        res.send(data);
+        res
+          .status(200)
+          .json({ data: data, message: "updated event with id: " + id });
       }
     })
     .catch((err) => {
@@ -130,4 +133,24 @@ export const updateById = (req, res) => {
         message: "Error updating event with id=" + id,
       });
     });
+};
+
+export const inviteGuests = async (req, res) => {
+  const id = req.params.id;
+  const event = await eventsModels.findById(id);
+  console.log("eeee" + event);
+  if (!event) {
+    res.status(404).send({ message: "Not found event with id " + id });
+    return;
+  } else {
+    await sendEmailInvited({
+      data: event,
+      email: req.body.email,
+      host: req.body.hostEmail,
+      message: req.body.message,
+    });
+    res.status(200).json({
+      message: "Email sent successfully",
+    });
+  }
 };
