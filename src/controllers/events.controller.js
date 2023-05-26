@@ -1,6 +1,9 @@
 import eventsModels from "../models/events.models.js";
 import { createZoomMeeting } from "../utils/zoom.utils.js";
-import { sendEmailInvited } from "../utils/email.utils.js";
+import {
+  registrationConfirmed,
+  sendEmailInvited,
+} from "../utils/email.utils.js";
 
 export const create = async (req, res) => {
   if (!req.body.name) {
@@ -138,7 +141,6 @@ export const updateById = (req, res) => {
 export const inviteGuests = async (req, res) => {
   const id = req.params.id;
   const event = await eventsModels.findById(id);
-  console.log("eeee" + event);
   if (!event) {
     res.status(404).send({ message: "Not found event with id " + id });
     return;
