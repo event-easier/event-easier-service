@@ -67,7 +67,12 @@ export const findOne = (req, res) => {
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found event with id " + id });
-      else res.send(data);
+      else {
+        res.status(200).send({
+          message: "Event found successfull.",
+          data: data
+        })
+      }
     })
     .catch(err => {
       res
@@ -88,10 +93,14 @@ export const findAll = (req, res) => {
   // query condition
   eventsModels.find(condition)
     .then(data => {
-      res.status(200).send({
-        message: "Event create successfull.",
-        data: data
-      })
+      if (!data)
+        res.status(404).send({ message: "Not found event with id " + id });
+      else {
+        res.status(200).send({
+          message: "Events found successfull.",
+          data: data
+        })
+      }
     })
     .catch(err => {
       res.status(500).send({
