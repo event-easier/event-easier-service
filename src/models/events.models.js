@@ -29,7 +29,7 @@ const EventSchema = new mongoose.Schema({
   require_approve: {
     type: Boolean,
   },
-  hosts: [{ avatar: String, name: String, user_id: String }],
+  hosts: [{ avatar: String, name: String, user_id: String, gmail: String }],
   guests: [
     {
       avatar: {
