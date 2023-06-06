@@ -1,16 +1,41 @@
+import mongoose from "mongoose";
 import eventsModels from "../models/events.models.js";
+import { createZoomMeeting } from "../utils/zoom.utils.js"
 
-export const create = (req, res) => {
+export const create = async (req, res) => {
   if (!req.body.name) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
   // Create a event
+  // Check type
+  const { type } = req.body;
+  let data_event_type = {};
+  if (type.event_type == 'IN_PERSON') {
+    data_event_type = {
+      event_type: type.event_type,
+      location: type.location,
+    }
+  }
+  else if (type.event_type == 'VIRTUAL') {
+    data_event_type = {
+      event_type: type.event_type,
+      event_url: type.event_url,
+    }
+  }
+  else if (type.event_type == 'ZOOM') {
+    const data = await createZoomMeeting();
+    data_event_type = {
+      event_type: type.event_type,
+      zoom_url: data.joinUrl,
+      zoom_id: data.zoomMeeting.id,
+      zoom_password: data.zoomMeeting.password,
+    }
+  }
   const event = new eventsModels({
     name: req.body.name,
-    type: req.body.type,
+    type: data_event_type,
     cover: req.body.cover,
-    location: req.body.location,
     start_time: req.body.start_time,
     end_time: req.body.end_time,
     require_approve: req.body.require_approve ? req.body.require_approve : false,
@@ -20,9 +45,12 @@ export const create = (req, res) => {
 
   // Save event in the database
   event
-    .save(event)
+    .save()
     .then(data => {
-      res.send(data);
+      res.status(200).send({
+        message: "Event create successfull.",
+        data: data
+      })
     })
     .catch(err => {
       res.status(500).send({
@@ -39,7 +67,12 @@ export const findOne = (req, res) => {
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found event with id " + id });
-      else res.send(data);
+      else {
+        res.status(200).send({
+          message: "Event found successfull.",
+          data: data
+        })
+      }
     })
     .catch(err => {
       res
@@ -49,7 +82,7 @@ export const findOne = (req, res) => {
 };
 
 export const findAll = (req, res) => {
-  const { user_id } = req.body;
+  const user_id = req.body.user_id;
   // create an condition
   const condition = {
     $or: [
@@ -60,7 +93,14 @@ export const findAll = (req, res) => {
   // query condition
   eventsModels.find(condition)
     .then(data => {
-      res.send(data);
+      if (!data)
+        res.status(404).send({ message: "Not found event with id " + id });
+      else {
+        res.status(200).send({
+          message: "Events found successful.",
+          data: data
+        })
+      }
     })
     .catch(err => {
       res.status(500).send({
@@ -71,8 +111,10 @@ export const findAll = (req, res) => {
 };
 
 export const updateById = (req, res) => {
+
   const id = req.params.id;
   const event = req.body;
+  const userId = req.userId;
   if (!event) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
@@ -80,15 +122,16 @@ export const updateById = (req, res) => {
     eventsModels.findByIdAndUpdate(id, event, { new: true })
       .then(data => {
         if (!data) {
-          console.log(data)
+
           res.status(404).send({ message: "Not found event with id " + id });
         } else res.send(data);
       })
       .catch(err => {
-        console.log(err);
+
         res.status(500).send({
           message: "Error updating event with id=" + id
         });
       });
   }
+
 };

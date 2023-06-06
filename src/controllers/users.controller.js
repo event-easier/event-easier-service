@@ -14,13 +14,7 @@ export const login = async (req, res) => {
   if (user) {
     await sendEmail({ data: req.body, code: code });
     cache.set(req.body.email, code);
-    res.json({
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      avatar: user.avatar,
-      type: user.type,
-    });
+    res.status(200).send("check your email");
   } else {
     res.send("not found user");
   }
@@ -45,15 +39,12 @@ export const register = async (req, res) => {
   const { email, name, avatar, type } = req.body;
   const User = await usersModels.findOne({ email: email });
   if (User) {
-    res.send("email already exist");
-  } else {
+  res.status(400).send({
+      message: "User already exists with this:" + email
+  })} else {
     const newUser = await usersModels.create({ email, name, avatar, type });
     res.json({
-      id: newUser._id,
-      name: newUser.name,
-      email: newUser.email,
-      avatar: newUser.avatar,
-      type: newUser.type,
+      data:newUser,
       token: jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
       }),
