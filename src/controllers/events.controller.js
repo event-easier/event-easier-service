@@ -73,19 +73,19 @@ export const findAll = (req, res) => {
 export const updateById = (req, res) => {
   const id = req.params.id;
   const event = req.body;
-  if(!event){
-    res.status(400).send({message: "Content can not be empty!"});
+  if (!event) {
+    res.status(400).send({ message: "Content can not be empty!" });
     return;
-  }else{
+  } else {
     eventsModels.findByIdAndUpdate(id, event, { new: true })
-    .then(data => {
+      .then(data => {
         if (!data) {
           console.log(data)
           res.status(404).send({ message: "Not found event with id " + id });
         } else res.send(data);
       })
-    .catch(err => {
-      console.log(err);
+      .catch(err => {
+        console.log(err);
         res.status(500).send({
           message: "Error updating event with id=" + id
         });
