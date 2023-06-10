@@ -121,7 +121,6 @@ export const registrationConfirmed = async (data) => {
 };
 
 export const notification = async (data) => {
-  console.log("123", data.status);
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -142,6 +141,34 @@ export const notification = async (data) => {
     } else {
       console.log("Email sent: " + info.response);
     }
+  });
+};
+
+export const thank = async (data) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    subject: "Cảm ơn bạn đã tham gia " + data.data.name,
+    text: "Nội dung email",
+    html: htmlThank(data),
+  };
+
+  let recipients = data.data.guests.map((guest) => guest.gmail);
+  recipients.forEach((recipient) => {
+    mailOptions.to = recipient;
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log("Gửi email thất bại: " + error);
+      } else {
+        console.log("Email đã được gửi thành công: " + info.response);
+      }
+    });
   });
 };
 
@@ -1484,4 +1511,151 @@ const htmlEmailNotification = (data) => {
   <img alt="" src="https://ci3.googleusercontent.com/proxy/Qps0iZsBJO4B8LX9jDSNnbP2IWHd4jtQlYSvBTgCsshSgYkSLiqDZhK0wEZKn8CAKWnCLSt3iCH8_qMXTFLLC8jPZtv7bOOho7JNXhifXalr7cYVzExGeFaJIR-NkVZAlXFAtr7xMn6rm6V6ecNUQ5IHs0T1Ljn0GZcIKYoFwtO8QzXtjEYlmgn7MM2BVSf2FYo58AHkOOyffZ4l=s0-d-e1-ft#https://jm54dyh1.r.us-west-2.awstrack.me/I0/01010188535b707f-e2d65e80-fa3e-4c73-8a61-b92bb650abaf-000000/uXbtA176jT8Lk1rnxo7O_CCwmV8=324" style="display:none;width:1px;height:1px" class="CToWUd" data-bit="iit"><div class="yj6qo"></div><div class="adL">
 </div></div>
   `;
+};
+
+const htmlThank = (data) => {
+  return (
+    `<div style="word-spacing:normal">
+  <div>
+  
+  <div style="margin:0px auto;max-width:600px">
+    
+    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%">
+      <tbody>
+        <tr>
+          <td style="direction:ltr;font-size:0px;padding:16px;text-align:center">
+            
+        
+  <div class="m_3047133006127817545mj-column-per-100" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%">
+    
+  <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+    <tbody>
+      <tr>
+        <td style="vertical-align:top;padding:0px">
+          
+  <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+    <tbody>
+      
+          <tr>
+            <td align="left" style="font-size:0px;padding:0px;padding-top:32px;padding-bottom:32px;word-break:break-word">
+              
+  <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px">
+    <tbody>
+      <tr>
+        <td style="width:50px">
+          
+  <img src="https://ci3.googleusercontent.com/proxy/EhoIcGgFr4aPQXRJ2ONl4NTXLXLT84ZiMnIo2cqDbRdSbel7443PVXYDKwJqBPZGKzGSGS8xV1WU0FEx054=s0-d-e1-ft#https://files.zmurl.com/email/star-icon.png" style="border:0;display:block;outline:none;text-decoration:none;height:50px;width:100%;font-size:16px" width="50" height="50" class="CToWUd" data-bit="iit">
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+            </td>
+          </tr>
+        
+          <tr>
+            <td align="left" style="font-size:0px;padding:0px;word-break:break-word">
+              
+  <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,sans-serif;font-size:16px;line-height:1.6;text-align:left;color:#131517"><h1 style="margin-top:0;margin-bottom:4px;font-size:24px;line-height:32px"><b>Thank you for joining</b><div style="font-weight:normal;color:#b3b5b7">` +
+    data.data.name +
+    `</div></h1></div>
+
+            </td>
+          </tr>
+        
+          <tr>
+            <td align="left" style="font-size:0px;padding:0px;word-break:break-word">
+              
+  <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,sans-serif;font-size:16px;line-height:1.6;text-align:left;color:#131517"><p>How did you like <b>${data.data.name}</b>?</p></div>
+
+            </td>
+          </tr>
+        <tr><td><table><tbody><tr><td><table class="m_3047133006127817545survey-pill"><tbody><tr><td class="m_3047133006127817545survey-pill-content m_3047133006127817545emoji"><a href="https://lu.ma/survey-response?pk=g-RCwCboXsIsBBRDX&amp;rt=1" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://lu.ma/survey-response?pk%3Dg-RCwCboXsIsBBRDX%26rt%3D1&amp;source=gmail&amp;ust=1686140072021000&amp;usg=AOvVaw17BkOHmdCKjK-jLTmtkB84"><img src="https://ci5.googleusercontent.com/proxy/kjdH3k3X2Ij3foSmwEVcCzKMS5qYtS9YqpjRMPsAPskth59Vfpncyrq6Dw-_q0nbAIaWlrKpOgBGviU=s0-d-e1-ft#https://files.zmurl.com/email/star-1.png" alt="Terrible" width="28" height="28" class="CToWUd" data-bit="iit"></a></td></tr></tbody></table></td><td><table class="m_3047133006127817545survey-pill"><tbody><tr><td class="m_3047133006127817545survey-pill-content m_3047133006127817545emoji"><a href="https://lu.ma/survey-response?pk=g-RCwCboXsIsBBRDX&amp;rt=2" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://lu.ma/survey-response?pk%3Dg-RCwCboXsIsBBRDX%26rt%3D2&amp;source=gmail&amp;ust=1686140072022000&amp;usg=AOvVaw2RC5zRv1cBCMUY4ssLXNmF"><img src="https://ci6.googleusercontent.com/proxy/Z-a1PPssOBI4pR3AmA5aj91suIuVAZJCZwWZbowy0L3NJZAcmXJqT1KVOvPxUyPwLVPv5KI2JIema4o=s0-d-e1-ft#https://files.zmurl.com/email/star-2.png" alt="Bad" width="28" height="28" class="CToWUd" data-bit="iit"></a></td></tr></tbody></table></td><td><table class="m_3047133006127817545survey-pill"><tbody><tr><td class="m_3047133006127817545survey-pill-content m_3047133006127817545emoji"><a href="https://lu.ma/survey-response?pk=g-RCwCboXsIsBBRDX&amp;rt=3" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://lu.ma/survey-response?pk%3Dg-RCwCboXsIsBBRDX%26rt%3D3&amp;source=gmail&amp;ust=1686140072022000&amp;usg=AOvVaw0PtKM1N-uoAYEaK5o2q5DV"><img src="https://ci5.googleusercontent.com/proxy/qFqTmj1jghrhZhZDiQMv6sUE5JlxUnBdWSrS4bzfKdJii59KoAGNsXCxFpqPRLNgz9rEDymaWkBfQfk=s0-d-e1-ft#https://files.zmurl.com/email/star-3.png" alt="Meh" width="28" height="28" class="CToWUd" data-bit="iit"></a></td></tr></tbody></table></td><td><table class="m_3047133006127817545survey-pill"><tbody><tr><td class="m_3047133006127817545survey-pill-content m_3047133006127817545emoji"><a href="https://lu.ma/survey-response?pk=g-RCwCboXsIsBBRDX&amp;rt=4" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://lu.ma/survey-response?pk%3Dg-RCwCboXsIsBBRDX%26rt%3D4&amp;source=gmail&amp;ust=1686140072022000&amp;usg=AOvVaw3XhIwmqZGO8n8J3cCs9PcX"><img src="https://ci6.googleusercontent.com/proxy/9AZp0U8sOsVqwMTs1ViblAK46SrD3_gfc5RiItpZNl9ahUWyNKMKoFfKEDmHhQIlL8r5oHF_bjuPbr4=s0-d-e1-ft#https://files.zmurl.com/email/star-4.png" alt="Good" width="28" height="28" class="CToWUd" data-bit="iit"></a></td></tr></tbody></table></td><td><table class="m_3047133006127817545survey-pill"><tbody><tr><td class="m_3047133006127817545survey-pill-content m_3047133006127817545emoji"><a href="https://lu.ma/survey-response?pk=g-RCwCboXsIsBBRDX&amp;rt=5" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://lu.ma/survey-response?pk%3Dg-RCwCboXsIsBBRDX%26rt%3D5&amp;source=gmail&amp;ust=1686140072022000&amp;usg=AOvVaw1vw0GH-CwpgCBuA8-XrMW8"><img src="https://ci5.googleusercontent.com/proxy/RxhBcpcI_mFRjv-BJHi2QKwlCwqHIMisaYbOeESHD4tUd40TG771B9AECUJjH4BOBl-Tz7a0l2M_AkM=s0-d-e1-ft#https://files.zmurl.com/email/star-5.png" alt="Great" width="28" height="28" class="CToWUd" data-bit="iit"></a></td></tr></tbody></table></td></tr></tbody></table>
+          </td></tr><tr>
+            <td align="center" style="font-size:0px;padding:0px;padding-top:32px;word-break:break-word">
+              
+  <p style="border-top:solid 1px #ebeced;font-size:1px;margin:0px auto;width:100%">
+  </p>
+  
+  
+
+
+            </td>
+          </tr>
+        
+    </tbody>
+  </table>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+      
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </div>
+
+  
+  
+
+  
+  <div style="margin:0px auto;max-width:600px">
+    
+    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%">
+      <tbody>
+        <tr>
+          <td style="direction:ltr;font-size:0px;padding:16px;text-align:center">
+            
+        
+  <div class="m_3047133006127817545mj-column-per-100" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%">
+    
+  <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+    <tbody>
+      <tr>
+        <td style="vertical-align:top;padding:0px">
+          
+  <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+    <tbody>
+      
+          <tr>
+            <td align="left" style="font-size:0px;padding:0px;word-break:break-word">
+              
+  <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,sans-serif;font-size:16px;line-height:1.6;text-align:left;color:#131517"><div><div class="m_3047133006127817545col-50" style="font-size:0;text-align:left;display:inline-block;vertical-align:top;width:100%;margin-bottom:8px"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top" width="100%"><tbody><tr><td align="left" style="font-size:0;padding-right:10px;word-break:break-word"><a href="https://lu.ma" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://lu.ma&amp;source=gmail&amp;ust=1686140072022000&amp;usg=AOvVaw1Giaclyebjgrc6uMR7dRsl"><img height="15" width="45" src="https://ci5.googleusercontent.com/proxy/OT4HHwv-eHH3muHLOZL1jaMJSWSCwertxQIAliVyOF0eHoNasdlkgJwJT64fVj7xTgZ3=s0-d-e1-ft#https://cdn.lu.ma/email/logo.png" class="CToWUd" data-bit="iit"></a></td></tr></tbody></table></div><div class="m_3047133006127817545col-50" style="font-size:0;text-align:left;display:inline-block;vertical-align:top;width:100%;margin-bottom:8px"><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top" width="100%"><tbody><tr><td align="left" style="font-size:0;word-break:break-word"><div style="font-size:12px;text-align:right;color:#b3b5b7"><a href="https://lu.ma/unsubscribe?host_api_id=usr-reAqh7vhaeFdI95&amp;pk=g-RCwCboXsIsBBRDX" style="color:#b3b5b7;text-decoration:none!important" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://lu.ma/unsubscribe?host_api_id%3Dusr-reAqh7vhaeFdI95%26pk%3Dg-RCwCboXsIsBBRDX&amp;source=gmail&amp;ust=1686140072022000&amp;usg=AOvVaw2qfqkh82POxjNF5gfJIwEe">Unsubscribe</a></div></td></tr></tbody></table></div></div></div>
+
+            </td>
+          </tr>
+        
+    </tbody>
+  </table>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+      
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </div>
+
+  
+  
+
+
+  </div>
+
+<img src="https://ci4.googleusercontent.com/proxy/lA9KUDhYG-sB-p7CUrWrvuG2ahpz1GhQJ1Hpp5dOMNR4ButW8CCNsyO1jNKH3p03memfWTDvGSRTtv7O3Nd_4oHMqQ-BjRHCZfzh-Rg42UDSCuE6iztK9---qXN45egwgi__FJeSdf7mxq2kdm5YAHKPq_rtnECXX9mLTPAnRsm1IZErIFGmWCKatciWnBZb8rKwAJc5gLOj0C0xSrNC8hiy6D-gS-JxyP97dAibvPwrn0ahAVNimOkbRHCW6dR5mlQXlUeJRxzAiSzoP4BeGYiPsJ4uY05GTLQCi1En1uS27Pkd0KMmyRZLAzkdYEGd2hPk1VW_FJfAb_UX40rxRqdlLmcR5kF8SBjmvYU5DOAf_H-h4oiPzqgkmojOxVfFCPtuOO-NGUVONFHJTQVAC76PM5LJN27-FBC-3n_Ls_DPvX79ojUf9vHj92xv2a0dmwJJ6BeFxLeAASFlT00_4J1t9be1Uo9rLLlwP1162fwcuW6UCv_1CDKoWr1sJDmgoA9hZvUTPCOQTsYPkjPu_2yND_q7PEa4l3sQAUsygaXzgOjcoL-Iq7GDapf54m-uLWMi7V4wZ_MDLjcnNC5oIpdjIDArXN40P0knyVEM7uwmiCfNc7iZhZTJYHiJqzokk6NMRiG0fj8CND8_JZZ91QtYlLumN-OlaMpbK5iX_elaDpreB1pIrT-hk9xm7qvS5fjafPB_CBr6buAPj4Fw-mkBJG410ULTrqQhZyvXcnHt48AOo5nYD_pX_v5sYm2zfocnnrMuVEIaYlMXlWLCHgqxJAWRC1ld1G5Y-XP9uYbya83Rbx2cXoFHQTCtWWDhwEPk9KqfYLMhyQkx0C00iQhmA6asxURU8jUuOEELz074D-XR8EF3EjFhYEkeMbe7AcXrctqX9sj2F0W9cV-_AAQGxR4VKCCkC2zrmHL9KuvuEkAjs30Z4SRne3Q=s0-d-e1-ft#https://ea.pstmrk.it/open?m=v3_1.I2V2q92ECMrfX__h2DlFYg.dLqvf8EmR6_-rw6Q93EiOeN7JGgRDLjLjMx0A2l9iSo8cnSSJ31f85JGFl1po92zQwN5A788w_o5ahg7duCgyxw_ve9rIOdaJemlYvscCsUH030QLWNIQXsC1Sr_Jxpk3OKDVNmmuLvjoTFS0zNq0tWtNv07-jFO0CnE5gZJOJzdD2iW9rKfVrKBITbRJh7OZv7f7zilt4NCvfWOr8fbG2T373IJqHDzyd0nF5w_P-lQPwBRNO1gPnjn-SbSI1weRh8GAMeUirjpwDMaCZ-YRAoNPIbR-m0emIctwGH7qeMl8kpJqaNQqseM9SZKivw1ko8NV60qHVfUkPgVj7fEyLC3Ujs9CIL8ogpXCQQcG_mTADP4BHwwvTbAXTyqL4zrVQ5OZ3Vduyg8pRsTMB-hhZScJ4ABgo9Mrk1GMEh5SQ8w-_Gx7R4rSEthENpH5NNG__lFUDmlCIWWC1Zurov7XowW5wxpJ3hPqlDwDkWxVB03aBE0xKNrbYIDQnIyVfa5cLoDGCjPlUpVYXm6uiu86OQx-ukfwAeOzJ5TU0WYw-HiDPzj_B2OyFF4bZicokxP-IYV1sZ1ZZugVe1k4AnM5cYzis3X7o8wYv6RIU-afLz_Ne4QTNAypJl4S2KuyteK" width="1" height="1" border="0" alt="" class="CToWUd" data-bit="iit"></div>`
+  );
 };

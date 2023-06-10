@@ -7,6 +7,7 @@ import {
   inviteGuests,
   confirm,
   newRegistration,
+  acceptTheJoin,
 } from "../controllers/events.controller.js";
 import { checkLogin } from "../middlewares/auth.middleware.js";
 
@@ -18,6 +19,7 @@ eventRouter.post("/create", checkLogin, create);
 eventRouter.post("/update/:id", checkLogin, updateById);
 eventRouter.post("/inviteGuests/:id", checkLogin, inviteGuests);
 eventRouter.post("/confirm/:id", checkLogin, confirm);
-eventRouter.post("/notification/:id", checkLogin, newRegistration);
+eventRouter.post("/registration/:id", checkLogin, newRegistration);
+eventRouter.post("/accept/:id", checkLogin, acceptTheJoin);
 
 export default eventRouter;

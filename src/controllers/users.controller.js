@@ -6,9 +6,9 @@ import { sendEmail } from "../utils/email.utils.js";
 const cache = new NodeCache({ stdTTL: 600 });
 const min = 100000;
 const max = 999999;
-const code = Math.floor(Math.random() * (max - min + 1)) + min;
 
 export const login = async (req, res) => {
+  let code = Math.floor(Math.random() * (max - min + 1)) + min;
   const email = req.body.email;
   const user = await usersModels.findOne({ email: email });
   if (user) {

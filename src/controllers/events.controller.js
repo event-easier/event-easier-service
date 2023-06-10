@@ -1,11 +1,16 @@
 import eventsModels from "../models/events.models.js";
 import { createZoomMeeting } from "../utils/zoom.utils.js";
 import usersModels from "../models/users.models.js";
+import schedule from "node-schedule";
+
 import {
   notification,
   registrationConfirmed,
+  thank,
   sendEmailInvited,
 } from "../utils/email.utils.js";
+
+const cronJobs = new Map();
 
 export const create = async (req, res) => {
   if (!req.body.name) {
@@ -124,9 +129,19 @@ export const updateById = (req, res) => {
     .where({ "hosts.user_id": userId })
     .then((data) => {
       if (!data) {
-        console.log(data);
         res.status(404).send({ message: "Not found event with id " + id });
       } else {
+        // Cập nhật công việc trong cronJobs
+
+        cronJobs.get(data._id)?.cancel();
+        const specificDate = new Date(data.end_time);
+        const newJob = schedule.scheduleJob(specificDate, async function () {
+          console.log("Công việc chạy một lần duy nhất.");
+          await thank({ data: data });
+          cronJobs.get(data._id)?.cancel();
+        });
+        cronJobs.set(data._id, newJob);
+
         res
           .status(200)
           .json({ data: data, message: "updated event with id: " + id });
@@ -139,7 +154,7 @@ export const updateById = (req, res) => {
       });
     });
 };
-//  mời tham gia
+//  mời tham gia (host)
 export const inviteGuests = async (req, res) => {
   const id = req.params.id;
   const event = await eventsModels.findById(id);
@@ -192,7 +207,7 @@ export const confirm = async (req, res) => {
     await eventsModels.findOneAndUpdate(filter, update, { new: true });
     await registrationConfirmed({
       data: event,
-      email: req.body.email,
+      email: req.body.guestGmail,
       hostEmail: host.gmail,
       hostName: host.name,
     });
@@ -227,8 +242,7 @@ export const newRegistration = async (req, res) => {
       status: "PENDING",
     };
     event.guests.push(newGuest);
-    const a = await event.save();
-    console.log("a,  ", a);
+    await event.save();
     await notification({
       data: event,
       email: event.hosts[0].gmail,
@@ -255,7 +269,7 @@ export const acceptTheJoin = async (req, res) => {
   );
   const numberOfPending = pendingGuest.length;
   const numberOfApproved = approvedGuest.length;
-
+  console.log(guest);
   if (!event || !guest) {
     res.status(404).json({
       message: "can't join this event",
@@ -285,82 +299,8 @@ export const acceptTheJoin = async (req, res) => {
       user: user,
       status: req.body.status,
       approved: numberOfApproved + 1,
-      pending: numberOfPending,
+      pending: numberOfPending - 1,
     });
     res.status(200).json({ message: "success" });
   }
 };
-
-// email thông báo có người đăng ký hoặc chấp nhận mới
-// export const newRegistration = async (req, res) => {
-//   const id = req.params.id; // id của event
-//   const event = await eventsModels.findById(id);
-//   if (!event)
-//     return res.status(404).json({ error: "can not find event with id " + id });
-//   const guest = event.guests.find((u) => u.user_id === req.userId);
-//   const user = await usersModels.findById(req.userId);
-//   const pendingGuest = event.guests.filter(
-//     (guest) => guest.status === "PENDING"
-//   );
-//   const approvedGuest = event.guests.filter(
-//     (guest) => guest.status === "APPROVED"
-//   );
-//   const numberOfPending = pendingGuest.length;
-//   const numberOfApproved = approvedGuest.length;
-
-//   if (guest) {
-//     res.status(404).json({
-//       message: "guest in event",
-//     });
-//     return;
-//   } else {
-//     await notification({
-//       data: event,
-//       email: event.hosts[0].gmail,
-//       user: user,
-//       status: req.body.status,
-//       approved:
-//         req.body.status === "accepted"
-//           ? numberOfApproved + 1
-//           : numberOfApproved,
-//       pending:
-//         req.body.status === "register"
-//           ? numberOfPending + 1
-//           : numberOfPending - 1,
-//     });
-//     if (req.body.status === "accepted") {
-//       const filter = { "guests.gmail": user.email, _id: id };
-//       const update = {
-//         $set: {
-//           "guests.$.status": "APPROVED",
-//           "guests.$.user_id": req.userId,
-//           "guests.$.name": user.name,
-//           "guests.$.avatar": user.avatar,
-//         },
-//       };
-//       await eventsModels.findOneAndUpdate(filter, update, {
-//         new: true,
-//       });
-//       await registrationConfirmed({
-//         data: event,
-//         email: user.email,
-//         hostEmail: event.hosts[0].gmail,
-//         hostName: event.hosts[0].name,
-//       });
-//     } else {
-//       const newGuest = {
-//         avatar: user.avatar,
-//         name: user.name,
-//         gmail: user.email,
-//         user_id: req.userId,
-//         status: "PENDING",
-//       };
-//       event.guests.push(newGuest);
-//       await event.save();
-//       console.log("newGuest", newGuest);
-//     }
-//     res.status(200).json({
-//       message: "Email sent successfully",
-//     });
-//   }
-// };
