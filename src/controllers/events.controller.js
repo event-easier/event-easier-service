@@ -57,6 +57,16 @@ export const create = async (req, res) => {
   event
     .save()
     .then((data) => {
+      const specificDate = new Date(req.body.end_time);
+      specificDate.setDate(specificDate.getDate() + 1);
+      const job = schedule.scheduleJob(specificDate, async function () {
+        await thank({ data: data });
+        cronJobs.get(data._id)?.cancel();
+      });
+
+      cronJobs.set(data._id, job);
+      console.log("cr", cronJobs); //
+
       res.status(200).send({
         message: "Event create successfull.",
         data,
@@ -134,7 +144,8 @@ export const updateById = (req, res) => {
         // Cập nhật công việc trong cronJobs
 
         cronJobs.get(data._id)?.cancel();
-        const specificDate = new Date(data.end_time);
+        const specificDate = new Date(req.body.end_time);
+        specificDate.setDate(specificDate.getDate() + 1);
         const newJob = schedule.scheduleJob(specificDate, async function () {
           console.log("Công việc chạy một lần duy nhất.");
           await thank({ data: data });
