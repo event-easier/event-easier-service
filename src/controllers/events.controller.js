@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import eventsModels from "../models/events.models.js";
-import { createZoomMeeting } from "../utils/zoom.utils.js"
+import { createZoomMeeting } from "../utils/zoom.utils.js";
 
 export const create = async (req, res) => {
   if (!req.body.name) {
@@ -11,26 +11,24 @@ export const create = async (req, res) => {
   // Check type
   const { type } = req.body;
   let data_event_type = {};
-  if (type.event_type == 'IN_PERSON') {
+  if (type.event_type == "IN_PERSON") {
     data_event_type = {
       event_type: type.event_type,
       location: type.location,
-    }
-  }
-  else if (type.event_type == 'VIRTUAL') {
+    };
+  } else if (type.event_type == "VIRTUAL") {
     data_event_type = {
       event_type: type.event_type,
       event_url: type.event_url,
-    }
-  }
-  else if (type.event_type == 'ZOOM') {
+    };
+  } else if (type.event_type == "ZOOM") {
     const data = await createZoomMeeting();
     data_event_type = {
       event_type: type.event_type,
       zoom_url: data.joinUrl,
       zoom_id: data.zoomMeeting.id,
       zoom_password: data.zoomMeeting.password,
-    }
+    };
   }
   const event = new eventsModels({
     name: req.body.name,
@@ -38,24 +36,25 @@ export const create = async (req, res) => {
     cover: req.body.cover,
     start_time: req.body.start_time,
     end_time: req.body.end_time,
-    require_approve: req.body.require_approve ? req.body.require_approve : false,
+    require_approve: req.body.require_approve
+      ? req.body.require_approve
+      : false,
     hosts: req.body.hosts,
-    guests: req.body.guests
+    guests: req.body.guests,
   });
 
   // Save event in the database
   event
     .save()
-    .then(data => {
+    .then((data) => {
       res.status(200).send({
         message: "Event create successfull.",
-        data: data
-      })
+        data,
+      });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the event."
+        message: err.message || "Some error occurred while creating the event.",
       });
     });
 };
@@ -63,21 +62,20 @@ export const create = async (req, res) => {
 export const findOne = (req, res) => {
   const id = req.params.id;
 
-  eventsModels.findById(id)
-    .then(data => {
+  eventsModels
+    .findById(id)
+    .then((data) => {
       if (!data)
         res.status(404).send({ message: "Not found event with id " + id });
       else {
         res.status(200).send({
           message: "Event found successfull.",
-          data: data
-        })
+          data: data,
+        });
       }
     })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving event with id=" + id });
+    .catch((err) => {
+      res.status(500).send({ message: "Error retrieving event with id=" + id });
     });
 };
 
@@ -88,30 +86,30 @@ export const findAll = (req, res) => {
     $or: [
       { "hosts.user_id": user_id ? user_id : "" },
       { "guests.user_id": user_id ? user_id : "" },
-    ]
+    ],
   };
   // query condition
-  eventsModels.find(condition)
-    .then(data => {
-      if (!data)
+  eventsModels
+    .find(condition)
+    .then((data) => {
+      if (!data) {
         res.status(404).send({ message: "Not found event with id " + id });
-      else {
+      } else {
         res.status(200).send({
-          message: "Events found successful.",
-          data: data
-        })
+          message: "Events found successfull.",
+          data: data,
+        });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving Events."
+        message: err.message || "Some error occurred while retrieving Events.",
+        data: [],
       });
     });
 };
 
 export const updateById = (req, res) => {
-
   const id = req.params.id;
   const event = req.body;
   const userId = req.userId;
@@ -119,19 +117,17 @@ export const updateById = (req, res) => {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   } else {
-    eventsModels.findByIdAndUpdate(id, event, { new: true })
-      .then(data => {
+    eventsModels
+      .findByIdAndUpdate(id, event, { new: true })
+      .then((data) => {
         if (!data) {
-
           res.status(404).send({ message: "Not found event with id " + id });
         } else res.send(data);
       })
-      .catch(err => {
-
+      .catch((err) => {
         res.status(500).send({
-          message: "Error updating event with id=" + id
+          message: "Error updating event with id=" + id,
         });
       });
   }
-
 };
