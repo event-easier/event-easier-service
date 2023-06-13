@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import eventsModels from "../models/events.models.js";
 import { createZoomMeeting } from "../utils/zoom.utils.js";
 

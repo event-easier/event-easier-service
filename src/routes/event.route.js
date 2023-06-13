@@ -9,7 +9,7 @@ import { checkLogin } from "../middlewares/auth.middleware.js";
 
 const eventRouter = Router();
 
-eventRouter.get("/:id", checkLogin, findOne);
+eventRouter.get("/user/:id", checkLogin, findOne);
 eventRouter.get("/user", checkLogin, findAll);
 eventRouter.post("/create", checkLogin, create);
 eventRouter.post("/update/:id", checkLogin, updateById);
