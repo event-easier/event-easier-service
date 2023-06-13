@@ -81,7 +81,6 @@ export const findOne = (req, res) => {
 
 export const findAll = (req, res) => {
   const user_id = req.userId;
-  console.log("user_id", user_id);
   // create an condition
   const condition = {
     $or: [
@@ -93,9 +92,9 @@ export const findAll = (req, res) => {
   eventsModels
     .find(condition)
     .then((data) => {
-      if (!data)
+      if (!data) {
         res.status(404).send({ message: "Not found event with id " + id });
-      else {
+      } else {
         res.status(200).send({
           message: "Events found successfull.",
           data: data,
@@ -105,6 +104,7 @@ export const findAll = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while retrieving Events.",
+        data: [],
       });
     });
 };
