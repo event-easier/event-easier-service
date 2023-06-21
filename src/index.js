@@ -8,6 +8,7 @@ import connectDatabase from "./configs/connectMongoDB.config.js";
 import eventRouter from "./routes/event.route.js";
 import exampleRoutes from "./routes/example.route.js";
 import userRouter from "./routes/user.route.js";
+import calendarRouter from "./routes/calendar.route.js";
 
 const app = express();
 const PORT = process.env.PORT || 8081;
@@ -35,7 +36,7 @@ async function main() {
   app.use("/api/v1/example", exampleRoutes);
   app.use("/api/v1/user", userRouter);
   app.use("/api/v1/event", eventRouter);
-
+  app.use("/api/v1/calendar", calendarRouter);
   // start server
   app.listen(PORT);
 }

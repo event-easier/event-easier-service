@@ -17,9 +17,6 @@ const EventSchema = new mongoose.Schema({
   cover: {
     type: String,
   },
-  location: {
-    type: String,
-  },
   start_time: {
     type: Date,
   },
