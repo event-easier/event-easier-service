@@ -42,10 +42,10 @@ export const createCalendar = async (req, res) => {
         data: data,
       });
     })
-    .catch((err) => {
+    .catch((error) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Clendar.",
+          error.message || "Some error occurred while creating the Clendar.",
       });
     });
 };
@@ -76,8 +76,11 @@ export const findCalendarsById = async (req, res) => {
         res.status(404).send({ message: "Not found calendar with id " + id });
       else res.send(data);
     })
-    .catch((err) => {
-      res.status(500).send({ message: "Error retrieving event with id=" + id });
+    .catch((error) => {
+      res.status(500).send({
+        message: "Error retrieving event with id=" + id,
+        error: error,
+      });
     });
 };
 

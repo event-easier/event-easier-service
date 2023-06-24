@@ -25,6 +25,10 @@ const CalendarSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  url: {
+    type: String,
+    require: true,
+  },
   color: { type: String, default: "red" },
   events: [{ type: mongoose.Schema.Types.ObjectId, ref: "events" }],
   people: [
