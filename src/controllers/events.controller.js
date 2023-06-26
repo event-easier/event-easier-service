@@ -147,7 +147,6 @@ export const updateById = (req, res) => {
         const specificDate = new Date(req.body.end_time);
         specificDate.setDate(specificDate.getDate() + 1);
         const newJob = schedule.scheduleJob(specificDate, async function () {
-          console.log("Công việc chạy một lần duy nhất.");
           await thank({ data: data });
           cronJobs.get(data._id)?.cancel();
         });
@@ -159,7 +158,6 @@ export const updateById = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).send({
         message: "Error updating event with id=" + id,
       });
