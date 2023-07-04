@@ -15,6 +15,7 @@ export const createCalendar = async (req, res) => {
     description,
     customURLlocation,
     color,
+    url,
   } = req.body;
   const calendar = new calendarModels({
     type: type,
@@ -24,6 +25,7 @@ export const createCalendar = async (req, res) => {
     description: description,
     customURLlocation: customURLlocation,
     color: color,
+    url: url,
   });
 
   calendar
@@ -52,11 +54,12 @@ export const createCalendar = async (req, res) => {
 
 export const findCalendarsByUser = async (req, res) => {
   const user = await usersModels.findById(req.userId);
-  const calendarId = user.calendars;
+  const calendarId = user.calendars.map((calendar) => calendar.id);
+
   const calendars = await calendarModels.find({ _id: { $in: calendarId } });
   if (!calendars) {
     res.status(500).send({
-      message: err.message || "Some error occurred while find the Clendar.",
+      message: "Some error occurred while find the Clendar.",
     });
   } else {
     res.status(200).send({

@@ -2,6 +2,7 @@ import usersModels from "../models/users.models.js";
 import jwt from "jsonwebtoken";
 import NodeCache from "node-cache";
 import { sendEmail } from "../utils/email.utils.js";
+import calendarModels from "../models/calendars.models.js";
 
 const cache = new NodeCache({ stdTTL: 600 });
 const min = 100000;
@@ -44,6 +45,29 @@ export const register = async (req, res) => {
     });
   } else {
     const newUser = await usersModels.create({ email, name, avatar, type });
+    // const calendar = new calendarModels({
+    //   type: "personal",
+    //   cover:
+    //     "https://images.lumacdn.com/cdn-cgi/image/fit=cover,dpr=2,quality=80,width=716.8/calendar-defaults/patterns/diamonds-100.png",
+    //   avatar: avatar,
+    //   calendarName: name,
+    //   description: "",
+    //   customURLlocation: "",
+    // });
+    // calendar.save().then(async (data) => {
+    //   await usersModels.findByIdAndUpdate(req.userId, {
+    //     $push: {
+    //       calendars: {
+    //         id: data._id,
+    //         role: "ADMIN",
+    //       },
+    //     },
+    //   });
+    //   res.status(200).send({
+    //     message: "Clendar create successfull.",
+    //     data: data,
+    //   });
+    // });
     res.json({
       data: newUser,
       token: jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, {

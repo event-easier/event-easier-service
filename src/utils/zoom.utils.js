@@ -13,7 +13,7 @@ export const createZoomMeeting = async () => {
       url,
       {
         topic: "Zoom Meeting",
-        type: 2, // 1 - Instant Meeting, 2 - Scheduled Meeting, 3 - Recurring Meeting with no fixed time
+        type: 2,
       },
       {
         headers: {
