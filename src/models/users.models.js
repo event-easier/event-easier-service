@@ -1,21 +1,35 @@
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
-    name:{
+  name: {
+    type: String,
+    require: true,
+  },
+  email: {
+    type: String,
+    require: true,
+  },
+  avatar: {
+    type: String,
+  },
+  type: {
+    type: String,
+    require: true,
+  },
+  calendars: [
+    {
+      id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "calendars",
+      },
+      role: {
         type: String,
-        require: true,
+        enum: ["ADMIN", "GUEST"],
+        required: true,
+        default: "GUEST",
+      },
     },
-    email:{
-        type:String,
-        require: true,
-    },
-    avatar:{
-        type: String,
-    },
-    type:{
-        type: String,
-        require: true,
-    }
-})
+  ],
+});
 
-export default mongoose.model('users', UserSchema);
+export default mongoose.model("users", UserSchema);
