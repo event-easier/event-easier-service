@@ -100,7 +100,7 @@ export const findOne = (req, res) => {
 };
 
 export const findAll = (req, res) => {
-  const user_id = req.user_id;
+  const user_id = req.userId;
   // create an condition
   const condition = {
     $or: [
