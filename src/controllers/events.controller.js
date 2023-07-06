@@ -100,7 +100,7 @@ export const findOne = (req, res) => {
 };
 
 export const findAll = (req, res) => {
-  const user_id = req.user_id;
+  const user_id = req.userid;
   // create an condition
   const condition = {
     $or: [
@@ -260,7 +260,7 @@ export const newRegistration = async (req, res) => {
       approved: numberOfApproved,
       pending: numberOfPending + 1,
     });
-    res.status(200).json({ message: "success" });
+    res.status(200).json({ message: "success", status: req.body.status});
   }
 };
 
@@ -310,6 +310,6 @@ export const acceptTheJoin = async (req, res) => {
       approved: numberOfApproved + 1,
       pending: numberOfPending - 1,
     });
-    res.status(200).json({ message: "success" });
+    res.status(200).json({ message: "success", status: req.body.status });
   }
 };
