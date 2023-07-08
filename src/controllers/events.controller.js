@@ -42,6 +42,7 @@ export const create = async (req, res) => {
   }
   const event = new eventsModels({
     name: req.body.name,
+    description: req.body.description,
     type: data_event_type,
     cover: req.body.cover,
     start_time: req.body.start_time,
